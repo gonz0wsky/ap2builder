@@ -1,0 +1,38 @@
+version: "2"
+services:
+  ap2qmkbuilder:
+    image: debian:bullseye
+    volumes:
+    - ./output:/output
+    entrypoint: ["/bin/sh","-c"]
+    command:
+    - |
+        sed -i \
+        -e "s|deb.debian.org|debian.fastweb.it|g" \
+        /etc/apt/sources.list
+
+        apt-get update && \
+        DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+        build-essential ca-certificates less git sudo \
+        pkg-config libusb-1.0-0-dev cargo gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib
+
+        git clone https://github.com/OpenAnnePro/AnnePro2-Tools.git tools
+        cd tools
+        cargo build --release
+        cd ..
+
+        git clone https://github.com/OpenAnnePro/qmk_firmware.git annepro-qmk --recursive --depth 1
+        cd annepro-qmk
+        ./util/qmk_install.sh
+        make annepro2/c18
+        cd ..
+
+        git clone https://github.com/OpenAnnePro/AnnePro2-Shine.git annepro-shine --recursive --depth 1
+        cd annepro-shine
+        make C18
+        cd ..
+
+
+        cp /tools/target/release/annepro2_tools /output
+        cp /annepro-qmk/.build/*.bin /output
+        cp /annepro-shine/build/C18/annepro2-shine-C18.bin /output
