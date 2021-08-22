@@ -21,7 +21,7 @@ services:
         cargo build --release
         cd ..
 
-        git clone https://github.com/OpenAnnePro/qmk_firmware.git annepro-qmk --recursive --depth 1
+        git clone https://github.com/gonz0wsky/qmk_firmware.git annepro-qmk --recursive --depth 1
         cd annepro-qmk
         ./util/qmk_install.sh
         make annepro2/c18
