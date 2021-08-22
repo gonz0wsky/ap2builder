@@ -16,17 +16,20 @@ services:
         build-essential ca-certificates less git sudo \
         pkg-config libusb-1.0-0-dev cargo gcc-arm-none-eabi libstdc++-arm-none-eabi-newlib
 
+        rm -rf tools
         git clone https://github.com/OpenAnnePro/AnnePro2-Tools.git tools
         cd tools
         cargo build --release
         cd ..
 
+        rm -rf annepro-qmk
         git clone https://github.com/gonz0wsky/qmk_firmware.git annepro-qmk --recursive --depth 1
         cd annepro-qmk
         ./util/qmk_install.sh
         make annepro2/c18
         cd ..
 
+        rm -rf annepro-shine
         git clone https://github.com/OpenAnnePro/AnnePro2-Shine.git annepro-shine --recursive --depth 1
         cd annepro-shine
         make C18
